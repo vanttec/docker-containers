@@ -24,14 +24,9 @@ RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt
 RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list' && \
     curl -L http://packages.osrfoundation.org/gazebo.key | apt-key add -
 
-# add non-root user
-RUN useradd -m developer && \
-    echo developer ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/developer && \
-    chmod 0440 /etc/sudoers.d/developer
-
 # install depending packages (install moveit! algorithms on the workspace side, since moveit-commander loads it from the workspace)
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y ros-$ROS_DISTRO-tf2-geometry-msgs ros-$ROS_DISTRO-pcl-ros protobuf-compiler && \
+    apt-get install -y ros-$ROS_DISTRO-tf2-geometry-msgs ros-$ROS_DISTRO-pcl-ros protobuf-compiler ros-kinetic-desktop-full && \
     apt-get clean
 
 RUN apt-get update -y && apt-get install -y python3 && curl -sS https://bootstrap.pypa.io/pip/3.5/get-pip.py | sudo python3 && rm -rf /var/lib/apt/lists/*
@@ -45,12 +40,6 @@ RUN pip3 install wheel && pip3 install -e /acados/interfaces/acados_template
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/acados/lib
 ENV ACADOS_SOURCE_DIR=/acados
-
-USER developer
-WORKDIR /home/developer
-
-ENV HOME /home/developer
-ENV SHELL /bin/bash
 
 # jre is required to use XML editor extension
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
