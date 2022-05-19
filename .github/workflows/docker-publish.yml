@@ -33,7 +33,6 @@ jobs:
         include:
           - dockerfile: ros-kinetic/Dockerfile
             image: ghcr.io/vanttec/ros-kinetic
-        include:
           - dockerfile: rllib_trainer/Dockerfile
             image: ghcr.io/vanttec/rllib_trainer
     steps:
