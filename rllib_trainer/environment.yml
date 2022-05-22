@@ -185,7 +185,6 @@ dependencies:
   - six=1.16.0=pyh6c4a22f_0
   - snappy=1.1.9=hbd366e4_1
   - sqlite=3.38.5=h4ff8645_0
-  - svt-av1=1.1.0=h27087fc_0
   - tabulate=0.8.9=pyhd8ed1ab_0
   - tensorboardx=2.5=pyhd8ed1ab_0
   - tifffile=2022.5.4=pyhd8ed1ab_0
