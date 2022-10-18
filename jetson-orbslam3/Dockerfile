@@ -95,7 +95,7 @@ RUN cd / && \
     git clone -b docker_opencv3.2_fix https://github.com/jahaniam/ORB_SLAM3 /ORB_SLAM3 && \
     cd /ORB_SLAM3 && chmod +x build.sh && ./build.sh 
 
-COPY ros_entrypoint.sh ros_entrypoint.sh
+COPY ros_entrypoint.sh /srv/visitor/ros_entrypoint.sh
 RUN chmod +x  /ros_entrypoint.sh
 ENV ROS_DISTRO noetic
 ENV LANG en_US.UTF-8
