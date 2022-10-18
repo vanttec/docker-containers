@@ -37,6 +37,8 @@ jobs:
             image: ghcr.io/vanttec/rllib_trainer
           - dockerfile: sdv_ros2_foxy/Dockerfile
             image: ghcr.io/vanttec/sdv_ros2_foxy
+          - dockerfile: jetson-orbslam3/Dockerfile
+            image: ghcr.io/vantec/jetson-orbslam3
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
