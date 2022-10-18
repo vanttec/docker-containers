@@ -10,3 +10,5 @@ General purpose ros-kinetic image with acados and other USV dependencies.
 General purpose sdv ros2 image and scripts.
 ### rllib_trainer
 Used for rllib training.
+### jetson-orbslam3
+ORB-SLAM3 CUDA-ready image installed with useful packages like OpenCV, Pangolin and other dependencies.
