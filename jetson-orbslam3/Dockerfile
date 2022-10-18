@@ -3,41 +3,48 @@ FROM nvcr.io/nvidia/l4t-jetpack:r35.1.0
 RUN apt-get update
 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y gnupg2 curl lsb-core vim wget python3-pip libpng16-16 libjpeg-turbo8 libtiff5
-
-
-# Installing ROS-noetic
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-RUN curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | apt-key add -
-RUN apt update
-RUN apt install -y ros-noetic-desktop
-RUN apt-get install -y python3-rosdep
-RUN rosdep init
-RUN rosdep update
-RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-RUN apt install -y python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
-
-# Intalling python-catkin
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
-RUN wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-RUN apt-get update
-RUN apt-get install -y python3-catkin-tools
-RUN apt-get install -y software-properties-common
-
-RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bash_profile
-
-
-RUN apt-get install -y \
-        # Base tools
-        cmake \
-        build-essential \
+	# Installing Base Tools
+RUN apt-get update && apt-get install -y \
+	gnupg2 \
+	curl \
+	lsb-core \
+	vim wget \
+	python3-pip \
+	libpng16-16 \
+	libjpeg-turbo8 \
+	libtiff5 \
+	build-essential \
+	cmake \
         git \
         unzip \
         pkg-config \
-        python-dev \
-        # OpenCV dependencies
-        python-numpy \
+	&& rm -rf /var/lib/apt/lists/*
+
+	# Installing ROS-noetic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
+	apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
+	curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | apt-key add - && \
+	apt-get  update && apt-get install -y \
+	ros-noetic-desktop \
+	python3-rosdep \
+	python3-rosinstall \
+	python3-rosinstall-generator \
+	python3-wstool \
+	&& rm -rf /var/lib/apt/lists/* && \
+	rosdep init && rosdep update && \
+	echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
+	# Intalling python-catkin
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list' && \
+	wget http://packages.ros.org/ros.key -O - | sudo apt-key add - && \
+	apt-get update && apt-get install -y \
+	python3-catkin-tools \
+	software-properties-common \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bash_profile
+
+RUN apt-get update && apt-get install -y \
         # Pangolin dependencies
         libgl1-mesa-dev \
         libglew-dev \
@@ -45,40 +52,45 @@ RUN apt-get install -y \
         libeigen3-dev \
         apt-transport-https \
         ca-certificates\
-        software-properties-common
+        software-properties-common \
+    	# Build OpenCV Dependencies
+	python3-dev \
+	python3-numpy \
+	python-dev \
+	python-numpy \
+	libavcodec-dev \
+	libavformat-dev \
+	libswscale-dev \
+	libgstreamer-plugins-base1.0-dev \
+	libgstreamer1.0-dev \
+	libgtk-3-dev \
+	libopencv-dev \
+	python3-opencv \
+ 	&& rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-RUN add-apt-repository "deb https://download.sublimetext.com/ apt/stable/"
-RUN apt update
-RUN apt install -y sublime-text
 
-# Build OpenCV (3.0 or higher should be fine)
-RUN apt-get install -y python3-dev python3-numpy 
-RUN apt-get install -y python-dev python-numpy
-RUN apt-get install -y libavcodec-dev libavformat-dev libswscale-dev
-RUN apt-get install -y libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev
-RUN apt-get install -y libgtk-3-dev
-
-
-
-# # Build Pangolin
+    # Build Pangolin
 RUN cd /tmp && git clone https://github.com/stevenlovegrove/Pangolin && \
     cd Pangolin && git checkout v0.6 && mkdir build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-std=c++11 .. && \
     make -j$nproc && make install && \
     cd / && rm -rf /tmp/Pangolin
 
-    # Open CV
-RUN cd /tmp && git clone https://github.com/opencv/opencv/
-RUN cd /tmp && git clone https://github.com/opencv/opencv_contrib/
-RUN cd /tmp/opencv && \
+    # Install Open CV from source 
+RUN cd /tmp && git clone https://github.com/opencv/opencv/ && \
+    git clone https://github.com/opencv/opencv_contrib/ && \
+    cd /tmp/opencv && \
     mkdir build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-std=c++11 -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules .. && \
     make -j4 && make install && \
     cd / && rm -rf /tmp/opencv && rm -rf /tmp/opencv_contrib
 
-RUN apt install -y libopencv-dev python3-opencv python-is-python3
-
+    # Set Python3 as default
+RUN apt-get update && apt-get install -y \
+    python-is-python3 \
+    && rm -rf /var/lib/apt/lists/*
+    
+    # Clone and build ORB-SLAM3
 RUN cd / && \
     git clone -b docker_opencv3.2_fix https://github.com/jahaniam/ORB_SLAM3 /ORB_SLAM3 && \
     cd /ORB_SLAM3 && chmod +x build.sh && ./build.sh 
