@@ -33,12 +33,16 @@ jobs:
         include:
           - dockerfile: ros-kinetic/Dockerfile
             image: ghcr.io/vanttec/ros-kinetic
+            path: ros-kinetic/
           - dockerfile: rllib_trainer/Dockerfile
             image: ghcr.io/vanttec/rllib_trainer
+            path: rllib_trainer/
           - dockerfile: sdv_ros2_foxy/Dockerfile
             image: ghcr.io/vanttec/sdv_ros2_foxy
+            path: sdv_ros2_foxy/
           - dockerfile: jetson-orbslam3/Dockerfile
             image: ghcr.io/vantec/jetson-orbslam3
+            path: jetson-orbslam3/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -85,6 +89,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile }}
+          path: ${{ matrix.path }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
