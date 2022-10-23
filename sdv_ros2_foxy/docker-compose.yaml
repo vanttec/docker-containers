@@ -1,0 +1,10 @@
+version: '3.0'
+
+services:
+  port_image:
+    build: ./
+    image: ros/sdv_port
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    container_name: sdv_port
+
