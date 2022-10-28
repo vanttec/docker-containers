@@ -40,9 +40,9 @@ jobs:
           - dockerfile: sdv_ros2_foxy/Dockerfile
             image: ghcr.io/vanttec/sdv_ros2_foxy
             path: sdv_ros2_foxy/
-          - dockerfile: jetson-orbslam3/Dockerfile
-            image: ghcr.io/vantec/jetson-orbslam3
-            path: jetson-orbslam3/
+          - dockerfile: cuda-jetpack-5.0.2/Dockerfile
+            image: ghcr.io/vantec/cuda-jetpack-5.0.2
+            path: cuda-jetpack-5.0.2/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
