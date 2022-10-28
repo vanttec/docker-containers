@@ -25,11 +25,12 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main"
 	apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
 	curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | apt-key add - && \
 	apt-get  update && apt-get install -y \
-	ros-noetic-desktop \
+	ros-noetic-desktop-full \
 	python3-rosdep \
 	python3-rosinstall \
 	python3-rosinstall-generator \
 	python3-wstool \
+	ros-noetic-sophus \
 	&& rm -rf /var/lib/apt/lists/* && \
 	rosdep init && rosdep update && \
 	echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
@@ -41,8 +42,6 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" 
 	python3-catkin-tools \
 	software-properties-common \
 	&& rm -rf /var/lib/apt/lists/*
-
-RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bash_profile
 
 RUN apt-get update && apt-get install -y \
         # Pangolin dependencies
@@ -90,20 +89,14 @@ RUN apt-get update && apt-get install -y \
     python-is-python3 \
     && rm -rf /var/lib/apt/lists/*
     
-    # Clone and build ORB-SLAM3
-RUN cd / && \
-    git clone -b docker_opencv3.2_fix https://github.com/jahaniam/ORB_SLAM3 /ORB_SLAM3 && \
-    cd /ORB_SLAM3 && chmod +x build.sh && ./build.sh 
-
-COPY ros_entrypoint.sh /srv/visitor/ros_entrypoint.sh
-RUN chmod +x  /ros_entrypoint.sh
 ENV ROS_DISTRO noetic
 ENV LANG en_US.UTF-8
-
-ENTRYPOINT ["/ros_entrypoint.sh"]
+RUN ["/bin/bash"]
+#ENTRYPOINT ["/ros_entrypoint.sh"]
 
 USER $USERNAME
 # terminal colors with xterm
 ENV TERM xterm
-WORKDIR /ORB_SLAM3
+RUN mkdir /ws
+WORKDIR /ws
 CMD ["bash"]
