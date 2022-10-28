@@ -21,17 +21,13 @@ sdv.intelcreate:
 sdvport.build:
 	@docker compose up
 sdvport.up:
-	@xhost +
-	@docker start sdv_port
-sdvport.down:
-	@xhost +
-	@docker stop sdv_port
+	@docker start sdv_port_container
+sdvport.down:+
+	@docker stop sdv_port_container
 sdvport.restart:
-	@xhost +
-	@docker restart sdv_port
-sdvport.shell:
-	@xhost +	
-	@docker exec -it sdv_port bash
+	@docker restart sdv_port_container
+sdvport.shell:	
+	@docker exec -it sdv_port_container bash
 sdvport.nvidiacreate:
 	@./runNvidiaGpuPort.bash
 sdvport.intelcreate:

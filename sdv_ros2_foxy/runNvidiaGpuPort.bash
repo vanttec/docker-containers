@@ -51,6 +51,6 @@ $DOCKER_COMMAND -it -d\
     -v /dev/bus/usb/:/dev/bus/usb \
     -v "$PWD/ws/src:/ws/src" \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    --name=sdv_port \
+    --name=sdv_port_container \
     ros/sdv_port \
     bash
