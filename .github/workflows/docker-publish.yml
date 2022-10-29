@@ -33,10 +33,16 @@ jobs:
         include:
           - dockerfile: ros-kinetic/Dockerfile
             image: ghcr.io/vanttec/ros-kinetic
+            path: ros-kinetic/
           - dockerfile: rllib_trainer/Dockerfile
             image: ghcr.io/vanttec/rllib_trainer
+            path: rllib_trainer/
           - dockerfile: sdv_ros2_foxy/Dockerfile
             image: ghcr.io/vanttec/sdv_ros2_foxy
+            path: sdv_ros2_foxy/
+          - dockerfile: cuda-jetpack-5.0.2/Dockerfile
+            image: ghcr.io/vantec/cuda-jetpack-5.0.2
+            path: cuda-jetpack-5.0.2/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -78,11 +84,12 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
-          context: .
+          context: ${{ matrix.path }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile }}
+          path: ${{ matrix.path }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker

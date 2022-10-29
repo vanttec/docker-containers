@@ -12,3 +12,5 @@ Provides compatibility with devices connected on host device's /ttyUSBO device n
 Note: Device must be connected first for image to generate/work correctly.
 ### rllib_trainer
 Used for rllib training.
+### cuda-jetpack-5.0.2
+General Purpose image installed with CUDA, ROS Noetic, OpenCV, Pangolin and other useful dependencies.
